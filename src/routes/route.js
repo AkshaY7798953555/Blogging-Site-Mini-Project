@@ -4,21 +4,27 @@ const router =express.Router();
 const midware = require("../middleware/middleware")
 
 
+//_____________CREAT AUTHOR__________________________
+router.post("/authors", controller.createAuthor)
+//_____________LOGIN__________________________
 
-//__________________CREATE AUTHOR__________________________
-router.post('/createauthormodel',controller.createAuthor);
-//__________________CREATE BLOG____________________________
-router.post('/createblog',midware.authenticate,controller.createblog);
-//__________________GET BLOG_______________________________
-router.get("/getBlog", midware.authenticate,controller.getBlog)
-//__________________UPDATE BLOG____________________________
-router.put("/updateBlog", midware.authorisation,controller.updateBlog)
-//__________________deleteBlog pathparam ____________________
-router.delete("/deleteBlog/:blogId",midware.authorisation, controller.deleteBlogs)
-//__________________deleteBlog queryparam____________________
-router.delete("/deleteBlogs",midware.authorisation, controller.deleteBlogs)
-//__________________LOGIN USER________________________________
-router.post("/loginUser", controller.loginuseer)
+router.post("/login", controller.authorLogin)
+//_____________CREAT BLOGS__________________________
+
+router.post("/blogs",midware.auth, controller.createblog)
+//_____________GET BLOGS__________________________
+
+router.get("/blogs",midware.auth, controller.getBlog)
+//_____________UPDATE BLOGS__________________________
+
+router.put("/blogs/:blogId",midware.auth, controller.updateBlog)
+//_____________DELET BLOGS PATH PARAM__________________________
+
+router.delete("/blogs/:blogId",midware.auth, controller.deleteBlog)
+//_____________DELET BLOGS QUERY PARAM__________________________
+
+router.delete("/blogs",midware.auth, controller.deleteBlogs)
+
 
 
 module.exports=router

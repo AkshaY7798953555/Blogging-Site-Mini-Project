@@ -1,9 +1,9 @@
 const express = require('express')
-const bodyParser = require('body-parser')
+
 const app = express();
-const {default : mongoose} = require('mongoose');
+const  mongoose  = require('mongoose');
 mongoose.set('strictQuery', true);
-const route = require('./src/routes/route');
+const route = require('./routes/route');
 
 app.use(express.json())
 

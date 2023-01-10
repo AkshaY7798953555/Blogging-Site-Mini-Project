@@ -1,41 +1,27 @@
 const jwt = require("jsonwebtoken");
-const authorModel = require("../models/authorModel");
 
-//____________________AUTHENTICATE___________________
+const auth = async function (req, res, next) {
+    try {
+        let token = req.headers["x-api-key"]
+        if (!token) return  res.status (400).send({status :false,message :"missing token is mandatory"})
+        jwt.verify (token,"Extra Secret String", function(err, decodedToken) {
+            if(err) return res.status (400).send({status :false,message :err.message})
+                if (decodedToken){
+                    req.authorId = decodedToken._id
+                    next()
+                } else{
+                    return res.status (401).send({status :false,message :"invalid token"})
 
-const authenticate = async function (req, res, next) {
-  try {
-    let token = req.headers["x-api-key"];
-    if (!token)
-      return res
-        .status(403)
-        .send({ status: false, message: "token is not present the headers" });
+                }
+        } )
+            
+        
 
-    jwt.verify(token, "project1group9");
+            
+        
+    } catch (error) {
+        res.status(500).send({ status: false, error: error.message })
+    }
+}
 
-    next();
-  } catch (error) {
-    console.log("Exception error : ", error);
-    res
-      .status(500)
-      .send({ message: "Exception while creating user : " + error });
-  }
-};
-//____________________AUTHERISATION___________________
-
-const authorisation = async function (req, res, next) {
-  try {
-    let token = req.headers["x-api-key"];
-    if (!token)
-      return res.status(403).send({ status: false, message: "token is not present the headers" });
-    req.body.authorId = token._id;
-
-    next();
-  } catch (error) {
-    console.log("Exception error : ", error);
-    res.status(500).send({ message: "Exception while creating user : " + error.message });
-  }
-};
-
-module.exports.authenticate = authenticate;
-module.exports.authorisation = authorisation;
+module.exports.auth = auth
